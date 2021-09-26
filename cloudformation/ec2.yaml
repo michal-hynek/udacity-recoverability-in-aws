@@ -1,0 +1,29 @@
+Description: EC2 Instance for testing RDS failover
+
+Parameters:
+  ApplicationSecurityGroup:
+    Description: SG for EC2 Instance that connects to the database
+    Type: String
+  
+  SubnetId:
+    Description: Instance subnet (should be a public subnet)
+    Type: String
+  
+  SSHKeyName:
+    Description: SSH key to access the EC2 instance
+    Type: String
+
+  InstanceImageId:
+    Description: EC2 instance image ID
+    Type: String
+
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !Ref ApplicationSecurityGroup
+      SubnetId: !Ref SubnetId
+      KeyName: !Ref SSHKeyName
+      ImageId: !Ref InstanceImageId

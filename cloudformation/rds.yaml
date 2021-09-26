@@ -1,0 +1,60 @@
+Description:  RDS Resources for Udacity - Design for Availability, Resilience, and Reliability
+
+Parameters:
+  Subnet1:
+    Description: Database VPC subnet 1 (using multiple subnets for multi-az configuration)
+    Type: String
+
+  Subnet2:
+    Description: Database VPC subnet 2 (using multiple subnets for multi-az configuration)
+    Type: String
+  
+  DBInstanceClass:
+    Description: RDS instance type
+    Type: String
+    Default: db.t3.micro
+
+  DatabaseSecurityGroup:
+    Description: Security group for the RDS instance
+    Type: String
+  
+  SourceDBId:
+    Description: Source DB ID if a read replica is being created
+    Type: String
+    Default: AWS::NoValue
+
+  SourceDBRegion:
+    Description: Source DB region if a read replica is being created
+    Type: String
+    Default: AWS::NoValue
+
+Resources:
+  RDSInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceClass: !Ref DBInstanceClass
+      DBInstanceIdentifier: primary
+      DBName: udacity
+      DBSubnetGroupName: !Ref RDSSubnetGroup
+      Iops: 1000
+      Engine: mysql
+      EngineVersion: 8.0.23
+      MultiAZ: true
+      SourceDBInstanceIdentifier: !Ref SourceDBId
+      SourceRegion: !Ref SourceDBRegion
+      # KmsKeyId: !Ref MyKey
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+    
+  RDSSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupDescription: RDS Subnet Group
+      SubnetIds: 
+        - !Ref Subnet1
+        - !Ref Subnet2
+
+Outputs:
+  DatabaseId:
+    Description: Database ID
+    Value: !Ref RDSInstance
