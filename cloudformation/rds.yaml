@@ -18,16 +18,27 @@ Parameters:
     Description: Security group for the RDS instance
     Type: String
   
+  DBUsername:
+    Description: DB username
+    Type: String
+
+  DBPassword:
+    Description: DB username
+    Type: String
+  
   SourceDBId:
     Description: Source DB ID if a read replica is being created
     Type: String
-    Default: AWS::NoValue
+    Default: ''
 
   SourceDBRegion:
     Description: Source DB region if a read replica is being created
     Type: String
-    Default: AWS::NoValue
+    Default: ''
 
+Conditions:
+  IsReadReplica: !And [ !Not [ !Equals [ !Ref SourceDBId, '' ] ], !Not [ !Equals [ !Ref SourceDBRegion, '' ] ] ]
+  
 Resources:
   RDSInstance:
     Type: AWS::RDS::DBInstance
@@ -36,13 +47,15 @@ Resources:
       DBInstanceIdentifier: primary
       DBName: udacity
       DBSubnetGroupName: !Ref RDSSubnetGroup
-      Iops: 1000
+      AllocatedStorage: 20
+      StorageType: gp2
       Engine: mysql
-      EngineVersion: 8.0.23
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
       MultiAZ: true
-      SourceDBInstanceIdentifier: !Ref SourceDBId
-      SourceRegion: !Ref SourceDBRegion
-      # KmsKeyId: !Ref MyKey
+      PubliclyAccessible: false
+      SourceDBInstanceIdentifier: !If [ IsReadReplica, !Ref SourceDBId, !Ref 'AWS::NoValue' ]
+      SourceRegion: !If [ IsReadReplica, !Ref SourceDBRegion, !Ref 'AWS::NoValue' ]
       VPCSecurityGroups:
         - !Ref DatabaseSecurityGroup
     

@@ -37,7 +37,7 @@ SECONDARY_PRIVATE_SUBNET2_ID=`aws cloudformation describe-stacks --stack-name Se
 aws cloudformation deploy \
     --stack-name PrimaryRDS \
     --template-file ./rds.yaml \
-    --parameter-overrides Subnet1=$PRIMARY_PRIVATE_SUBNET1_ID Subnet2=$PRIMARY_PRIVATE_SUBNET2_ID DatabaseSecurityGroup=$PRIMARY_DB_SG \
+    --parameter-overrides Subnet1=$PRIMARY_PRIVATE_SUBNET1_ID Subnet2=$PRIMARY_PRIVATE_SUBNET2_ID DatabaseSecurityGroup=$PRIMARY_DB_SG DBUsername=root DBPassword=testtest1 SourceDBId='' SourceDBRegion='' \
     --profile udacity \
     --region us-west-2
 
