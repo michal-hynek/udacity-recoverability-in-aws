@@ -1,6 +1,10 @@
 Description:  RDS Resources for Udacity - Design for Availability, Resilience, and Reliability
 
 Parameters:
+  DatabaseId:
+    Description: Database identifier
+    Type: String
+
   Subnet1:
     Description: Database VPC subnet 1 (using multiple subnets for multi-az configuration)
     Type: String
@@ -44,7 +48,7 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties:
       DBInstanceClass: !Ref DBInstanceClass
-      DBInstanceIdentifier: primary
+      DBInstanceIdentifier: !Ref DatabaseId
       DBName: udacity
       DBSubnetGroupName: !Ref RDSSubnetGroup
       AllocatedStorage: 20
