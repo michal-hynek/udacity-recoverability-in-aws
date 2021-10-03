@@ -1,0 +1,15 @@
+Minimum RTO for a single AZ outage: 10 minutes
+==============================================
+The setup uses multi-AZ configuration, so there's a standby instance in a different AZ.  There's no manual intervention necessary in this case.  According to AWS documentation, the switch only takes few minutes, so 10 minutes is more than enough for the recovery.
+
+Minimum RTO for a single region outage: 30 minutes
+==================================================
+Manual intervention is necessary to promote the read replica.  Assuming there are people on the call, it will take them about 10-15 minutes to log in to AWS.  Another 5-10 minutes are necessary for the promotion to complete.
+
+Minimum RPO for a single AZ outage: 5 minutes
+=============================================
+According to https://aws.amazon.com/blogs/database/amazon-rds-under-the-hood-single-az-instance-recovery/, the recovery is typically 5 minutes ((the interval required for copying transaction logs to Amazon S3)
+
+Minimum RPO for a single region outage: 5 minutes
+=================================================
+There's a lag between when the data is written to the master db and replica (replica lag).  The lag should only be few seconds, so RPO of 5 minutes should be sufficient.
